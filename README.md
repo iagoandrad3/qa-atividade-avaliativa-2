@@ -1,108 +1,159 @@
+# Atividade Avaliativa 2 - Testes de Integracao
 
-# Executar ambiente localhost
+**Aluno:** Iago Andrade
 
-### Construir imagem docker
-```
+## Objetivo da Atividade
+
+Esta atividade tem como objetivo implementar e documentar testes de integracao em um projeto Laravel, validando fluxos reais da aplicacao por meio de requisicoes HTTP, rotas, controllers, models, migrations e banco de dados de teste.
+
+Os testes cobrem os principais comportamentos das entidades **Autores**, **Livros** e **Pessoas**, incluindo cadastro, validacoes, atualizacao, edicao de registros inexistentes e exclusao quando implementada.
+
+## Tecnologias Utilizadas
+
+- Laravel
+- PHP
+- PHPUnit
+- MySQL
+- Docker
+- GitHub Actions
+
+## Como Executar o Projeto
+
+Construir as imagens Docker:
+
+```bash
 docker compose build --no-cache
 ```
 
-### Iniciar todo o ambiente
-```
+Iniciar o ambiente:
+
+```bash
 docker compose up
 ```
 
-### Parar todo o ambiente
+Executar comandos Artisan dentro do container da aplicacao:
+
+```bash
+docker compose exec app php artisan <comando>
 ```
+
+Exemplo para executar migrations:
+
+```bash
+docker compose exec app php artisan migrate
+```
+
+Parar o ambiente:
+
+```bash
 docker compose down
 ```
 
-### Ver logs em tempo real
-```
-docker compose logs -f app
-```
+## Como Executar os Testes
 
-### Executar command no artisan
-```
-docker compose exec app php artisan 
-<comando>
-```
-Exemplos: 
-```
-docker compose exec app php artisan migrate
-
-docker compose exec app php artisan migrate:rollback
-
-docker compose exec app php artisan db:seed
-
-docker compose exec app php artisan db:seed PessoaBibliotecaSeeder
-```
-
-
-### Cobertura de teste com xdebug
-```
-docker exec -it app_laravel bash
-XDEBUG_MODE=coverage /usr/bin/php8.4 artisan test --coverage
-```
-
-
-
-
-
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
-
-## About Laravel
-
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
-
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
-
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Executar todos os testes:
 
 ```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+php artisan test
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Executar somente os testes de autores:
 
-## Contributing
+```bash
+php artisan test --filter AutorTest
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Executar somente os testes de livros:
 
-## Code of Conduct
+```bash
+php artisan test --filter LivroTest
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Executar somente os testes de pessoas:
 
-## Security Vulnerabilities
+```bash
+php artisan test --filter PessoaTest
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Testes de Autores
 
-## License
+Arquivo: `tests/Feature/AutorTest.php`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Os testes de autores validam:
+
+- criacao de autor com dados validos;
+- obrigatoriedade do campo `nome`;
+- limite maximo de 200 caracteres para o campo `nome`;
+- atualizacao valida de um autor existente;
+- bloqueio de atualizacao invalida quando o nome nao e informado;
+- tentativa de edicao de autor inexistente, retornando 404.
+
+## Testes de Livros
+
+Arquivo: `tests/Feature/LivroTest.php`
+
+Os testes de livros validam:
+
+- criacao de livro com dados validos;
+- exibicao de livro existente;
+- retorno 404 ao acessar livro inexistente;
+- atualizacao valida de um livro existente;
+- exclusao valida de um livro existente.
+
+O teste de exibicao de livro existente esta marcado com `markTestSkipped()`, pois a rota `livros.show` chama a view `resources/views/livros/show.blade.php`, que nao existe no projeto. Sem essa view, a requisicao retorna erro 500.
+
+## Testes de Pessoas
+
+Arquivo: `tests/Feature/PessoaTest.php`
+
+Os testes de pessoas validam:
+
+- criacao de pessoa com dados validos;
+- bloqueio de cadastro quando `password` e `confirmPassword` sao diferentes;
+- atualizacao valida de uma pessoa existente;
+- bloqueio de atualizacao quando as senhas sao diferentes;
+- tentativa de edicao de pessoa inexistente;
+- exclusao de pessoa.
+
+Os testes tambem verificam que a senha e salva com hash, utilizando `Hash::check`.
+
+O teste de exclusao de pessoa esta marcado com `markTestSkipped()`, pois o metodo `PessoaController::destroy()` esta vazio. Assim, a rota `DELETE /pessoas/{id}` nao remove o registro nem redireciona apos a exclusao.
+
+## Resultado Atual
+
+- 17 testes passando.
+- 2 testes ignorados.
+- GitHub Actions executando com sucesso.
+
+Os dois testes ignorados correspondem a problemas conhecidos do projeto e possuem justificativa diretamente no codigo por meio de `markTestSkipped()`.
+
+## Problemas Encontrados
+
+- A rota de exibicao de um livro existente retorna erro 500 porque `resources/views/livros/show.blade.php` nao existe.
+- `PessoaController::destroy()` esta vazio, entao a exclusao de pessoas ainda nao foi implementada.
+- Existem inconsistencias nos campos `$fillable` dos models em relacao as migrations e controllers. Por exemplo, `Autor` possui `sobrenome` no `$fillable`, mas esse campo nao aparece na migration; `Livro` possui campos como `autor`, `editora` e `ano_publicacao`, enquanto a migration e o controller trabalham com `autor_id`, `titulo`, `isbn` e `data_publicacao`.
+- O ambiente original de testes estava configurado para SQLite, mas o container nao possuia o driver necessario. Para a execucao atual, os testes usam MySQL com o banco `app_biblioteca_test`.
+
+## GitHub Actions
+
+O workflow de integracao continua esta definido em:
+
+```text
+.github/workflows/tests.yml
+```
+
+Ele executa automaticamente os testes em:
+
+- `pull_request`;
+- `push` para as branches `master`, `develop` e `testes-integracao-iago`.
+
+O workflow utiliza Ubuntu, PHP 8.4 e MySQL 8.4. As etapas principais sao:
+
+- checkout do repositorio;
+- configuracao do PHP 8.4 com extensoes necessarias;
+- instalacao das dependencias com Composer;
+- inicializacao e espera do MySQL;
+- execucao das migrations com `php artisan migrate --force`;
+- execucao da suite de testes com `php artisan test`.
+
+O GitHub Actions nao utiliza Docker Compose. O banco MySQL e criado como servico proprio do workflow.
