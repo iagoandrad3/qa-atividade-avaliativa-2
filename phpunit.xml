@@ -18,17 +18,17 @@
         </include>
     </source>
     <php>
-        <env name="APP_ENV" value="testing"/>
+        <env name="APP_ENV" value="testing" force="true"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="BROADCAST_CONNECTION" value="null"/>
         <env name="CACHE_STORE" value="array"/>
-        <env name="DB_CONNECTION" value="mysql"/>
-        <env name="DB_HOST" value="mysql"/>
-        <env name="DB_PORT" value="3306"/>
-        <env name="DB_DATABASE" value="app_biblioteca_test"/>
-        <env name="DB_USERNAME" value="dev"/>
-        <env name="DB_PASSWORD" value="minhasenha"/>
+        <env name="DB_CONNECTION" value="mysql" force="true"/>
+        <env name="DB_HOST" value="mysql" force="true"/>
+        <env name="DB_PORT" value="3306" force="true"/>
+        <env name="DB_DATABASE" value="app_biblioteca_test" force="true"/>
+        <env name="DB_USERNAME" value="dev" force="true"/>
+        <env name="DB_PASSWORD" value="minhasenha" force="true"/>
         <env name="DB_URL" value=""/>
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
