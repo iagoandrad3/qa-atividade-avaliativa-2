@@ -157,3 +157,6 @@ O workflow utiliza Ubuntu, PHP 8.4 e MySQL 8.4. As etapas principais sao:
 - execucao da suite de testes com `php artisan test`.
 
 O GitHub Actions nao utiliza Docker Compose. O banco MySQL e criado como servico proprio do workflow.
+
+<img width="1117" height="963" alt="image" src="https://github.com/user-attachments/assets/582989e5-51be-451a-ba35-e8c84f17fac7" />
+
