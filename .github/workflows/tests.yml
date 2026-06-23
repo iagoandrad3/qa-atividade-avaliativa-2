@@ -1,0 +1,72 @@
+name: Tests
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - develop
+      - testes-integracao-iago
+
+jobs:
+  tests:
+    name: Laravel Tests
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: app_biblioteca_test
+          MYSQL_USER: dev
+          MYSQL_PASSWORD: minhasenha
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -udev -pminhasenha"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
+    env:
+      APP_ENV: testing
+      APP_KEY: base64:d5cGgIsx8q3QrGvVtvZvbblI0/ZUEVR0rfn7jqlaE/0=
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_DATABASE: app_biblioteca_test
+      DB_USERNAME: dev
+      DB_PASSWORD: minhasenha
+      CACHE_STORE: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_mysql, mbstring, xml, ctype, json, tokenizer
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Map PHPUnit database host
+        run: echo "127.0.0.1 mysql" | sudo tee -a /etc/hosts
+
+      - name: Wait for MySQL
+        run: |
+          until mysqladmin ping -h 127.0.0.1 -P 3306 -udev -pminhasenha --silent; do
+            sleep 2
+          done
+
+      - name: Run migrations
+        run: php artisan migrate --force
+
+      - name: Run tests
+        run: php artisan test
